@@ -34,7 +34,8 @@ var RadarChart = {
        .attr("y1", function(d, i){return levelFactor*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
        .attr("x2", function(d, i){return levelFactor*(1-cfg.factor*Math.sin((i+1)*cfg.radians/total));})
        .attr("y2", function(d, i){return levelFactor*(1-cfg.factor*Math.cos((i+1)*cfg.radians/total));})
-       .attr("class", "line").style("stroke", "grey").style("stroke-width", "0.5px").attr("transform", "translate(" + (cfg.w/2-levelFactor) + ", " + (cfg.h/2-levelFactor) + ")");;
+       .attr("class", "line").style("stroke", "grey").style("stroke-width", "0.5px")
+       .attr("transform", "translate(" + (cfg.w/2-levelFactor) + ", " + (cfg.h/2-levelFactor) + ")");;
 
     }
 
@@ -68,16 +69,13 @@ var RadarChart = {
           ]);
         });
       dataValues.push(dataValues[0]);
-      g.select(id+" g").selectAll(".area")
+      var area = g.select(id+" g").selectAll(".area")
                      .data([dataValues])
                      .enter()
                      .append("polygon")
                      .attr("class", "serie"+series)
                      .style("stroke-width", "2px")
                      .style("stroke", color(series))
-                     .attr("points",function(d) {return d})
-                     .style("fill", function(j, i){return color(series)})
-                     .style("fill-opacity", cfg.opacityArea)
                      .on('mouseover', function (d){
                                         z = "polygon."+d3.select(this).attr("class");
                                         g.selectAll("polygon").transition(200).style("fill-opacity", 0.1); 
@@ -86,6 +84,9 @@ var RadarChart = {
                      .on('mouseout', function(){
                                         g.selectAll("polygon").transition(200).style("fill-opacity", cfg.opacityArea);
                      });
+      area.transition(1000)
+      .attr("points",function(d) {return d}).style("fill", function(j, i){return color(series)})
+      .style("fill-opacity", cfg.opacityArea).ease("elastic");
       series++;
     }
     series=0;
@@ -93,21 +94,10 @@ var RadarChart = {
 
     for(x in d){
       y = d[x];
-      d3.select(id+" g").selectAll(".nodes")
+      var nodes = d3.select(id+" g").selectAll(".nodes")
         .data(y).enter()
         .append("svg:circle").attr("class", "serie"+series)
-        .attr('r', cfg.radius)
         .attr("alt", function(j){return Math.max(j.value, 0)})
-        .attr("cx", function(j, i){
-          dataValues.push([
-            cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-            cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-        ]);
-        return cfg.w/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
-        })
-        .attr("cy", function(j, i){
-          return cfg.h/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
-        })
         .attr("data-id", function(j){return j.axis})
         .style("fill", color(series)).style("fill-opacity", .9)
         .on('mouseover', function (d){
@@ -124,7 +114,17 @@ var RadarChart = {
                   })
         .append("svg:title")
         .text(function(j){return Math.max(j.value, 0)});
-
+        
+      nodes.transition(1000).attr('r', cfg.radius).attr("cx", function(j, i){
+          dataValues.push([
+            cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
+            cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
+        ]);
+        return cfg.w/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
+        })
+        .attr("cy", function(j, i){
+          return cfg.h/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
+        });
       series++;
     }
     //Tooltip
