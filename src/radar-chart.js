@@ -39,7 +39,7 @@ var RadarChart = {
 
     }
 
-    var color = d3.scale.category10();
+    var color = (options && options.color)? options.color : d3.scale.category10();
 
     series = 0;
 

@@ -8,41 +8,7 @@
 </head>
 <body>
  <div style='width:100%;display:block;'>
-  <h2>Example of radar chart</h2>
   <h4><a href='https://github.com/alangrafu/radar-chart-d3'>https://github.com/alangrafu/radar-chart-d3</a></h4>
-  <div id="chart" style='float:left'></div>
-  <div style='float:left'>
-   Code:
-   <pre>
-d = [
-     [
-           {axis: "strength", value: 13}, 
-           {axis: "intelligence", value: 1}, 
-           {axis: "charisma", value: 8},  
-           {axis: "dexterity", value: 4},  
-           {axis: "luck", value: 9}
-          ],[
-           {axis: "strength", value: 3}, 
-           {axis: "intelligence", value: 15}, 
-           {axis: "charisma", value: 4}, 
-           {axis: "dexterity", value: 1},  
-           {axis: "luck", value: 15}
-          ],[
-           {axis: "strength", value: 5}, 
-           {axis: "intelligence", value: 1}, 
-           {axis: "charisma", value: 16}, 
-           {axis: "dexterity", value: 10},  
-           {axis: "luck", value: 5}
-     ]
-];
-
-RadarChart.draw("#chart", d);
-
-   </pre>
-  </div>
- </div>
- 
-<div style='width:100%;margin-top:700px;'>
 <h2>Dynamically-generated chart</h2>
 <a name="dynamic"></a>
 <div id="chart2" style='float:left' ></div>
@@ -51,36 +17,11 @@ RadarChart.draw("#chart", d);
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="../src/radar-chart.js"></script>
 <script>
-var d = [
-          [
-           {axis: "strength", value: 13}, 
-           {axis: "intelligence", value: 1}, 
-           {axis: "charisma", value: 8},  
-           {axis: "dexterity", value: 4},  
-           {axis: "luck", value: 9}
-          ],[
-           {axis: "strength", value: 3}, 
-           {axis: "intelligence", value: 15}, 
-           {axis: "charisma", value: 4}, 
-           {axis: "dexterity", value: 1},  
-           {axis: "luck", value: 15}
-          ],[
-           {axis: "strength", value: 5}, 
-           {axis: "intelligence", value: 1}, 
-           {axis: "charisma", value: 16}, 
-           {axis: "dexterity", value: 10},  
-           {axis: "luck", value: 5}
-          ]
-        ];
-
-
-RadarChart.draw("#chart", d);
-
-
-//This function generates a new array with 3 objects every time. The values for each axis are randomized
-//In order to re-generate the radar chart, you jsut need to run RadarChart.draw("#chart2", data) as usual.
 
 function newRadar(){
+  var config = {};
+  config["color"] = d3.scale.category20();
+
   data = [];
   for(var i=0; i<3; i++){
     data.push([
@@ -91,7 +32,7 @@ function newRadar(){
            {axis: "luck", value: Math.floor((Math.random()*100)+1)}
           ])
   }
-  RadarChart.draw("#chart2", data);
+  RadarChart.draw("#chart2", data, config);
 }
 newRadar();
 </script>
